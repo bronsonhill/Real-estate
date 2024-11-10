@@ -1,6 +1,0 @@
-{
-    "db_path": "database.db",
-    "driver_path": "chromedriver/chromedriver",
-    "chrome_options": ["--headless", "--no-sandbox", "--disable-dev-shm-usage"],
-    "suburb_state_code": "VIC"
-}

@@ -1,0 +1,6 @@
+{
+    "db_path": "scraping/database.db",
+    "driver_path": "scraping/chromedriver/chromedriver",
+    "chrome_options": ["--headless", "--no-sandbox", "--disable-dev-shm-usage"],
+    "suburb_state_code": "VIC"
+}
