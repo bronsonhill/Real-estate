@@ -1,0 +1,13 @@
+/* src/components/Header.css */
+.header {
+    background-color: #003166;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 34px;
+}

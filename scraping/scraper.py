@@ -30,7 +30,7 @@ PAGE_TIMEOUT = (20, 40)
 SUCCESS_STATUS = "success"
 FAILURE_STATUS = "failure"
 NO_LISTINGS_STATUS = "no_listings"
-RECENT_SCRAPE_WINDOW_HOURS = 24  # Time window in hours to skip recently scraped pages
+RECENT_SCRAPE_WINDOW_HOURS = 24 * 14  # Time window in hours to skip recently scraped pages
 
 # Set up Selenium with Chrome WebDriver
 def setup_driver(driver_path, options):
@@ -128,8 +128,12 @@ def scrape_page(params):
                         EC.presence_of_element_located((By.XPATH, "//ul[@data-testid='results']"))
                     )
                 except TimeoutException:
+                    if page_num == 1:
+                        status = NO_LISTINGS_STATUS
+                    else:
+                        status = SUCCESS_STATUS
                     logger.info(f"No listings found after timeout on page {page_num} for {bedrooms} bedrooms in {suburb}. Ending page scraping.")
-                    db_handler.update_progress(suburb, postcode, property_type, category, bedrooms, page_num, NO_LISTINGS_STATUS, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                    db_handler.update_progress(suburb, postcode, property_type, category, bedrooms, page_num, status, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     driver.quit()
                     db_handler.close()
                     return

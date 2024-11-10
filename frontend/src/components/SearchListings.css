@@ -1,0 +1,62 @@
+/* src/components/SearchListings.css */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 18px;
+}
+
+.search-container input,
+.search-container select {
+    margin: 10px;
+    padding: 10px;
+    width: 200px;
+    /* height: 20px; */
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px; /* Style the text within the input and select elements */
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Add transition */
+}
+
+.search-container select:focus,
+.search-container input:focus {
+    /* border: 2px solid #007bff; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-container select:hover,
+.search-container input:hover {
+    border-color: #007bff; /* Change border color on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a slightly stronger shadow on hover */
+}
+
+.search-container button {
+    margin: 10px;
+    /* padding: 10px 20px; */
+    height: 40px;
+    width: 100px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 1000000;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.listings-container {
+    margin: 20px;
+}
+
+.listing {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+}
