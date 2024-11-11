@@ -9,13 +9,13 @@ CREATE TABLE listings (
     price TEXT,
     link TEXT,
     listing_tag TEXT,
-    category TEXT,
+    listing_type TEXT,
     bathrooms TEXT,
     parking_spaces TEXT,
     square_metres TEXT,
     oldest_scraped_at DATETIME NOT NULL,
     latest_scraped_at DATETIME NOT NULL,
-    UNIQUE (address, suburb, postcode, property_type)
+    bedrooms INTEGER NOT NULL,
 );
 
 
