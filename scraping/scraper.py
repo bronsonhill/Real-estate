@@ -94,14 +94,14 @@ def extract_listing_data(listing):
     return data
 
 def scrape_page(params):
-    suburb, postcode, property_type, category, bedrooms = params
+    suburb, postcode, property_type, listing_type, bedrooms = params
     db_handler = DatabaseHandler(config['db_path'])
 
     # Check if recently scraped
     recent_scrape_cutoff = datetime.now() - timedelta(hours=RECENT_SCRAPE_WINDOW_HOURS)
-    last_scraped = db_handler.get_progress(suburb, postcode, property_type, category, bedrooms)
+    last_scraped = db_handler.get_progress(suburb, postcode, property_type, listing_type, bedrooms)
     if last_scraped and datetime.strptime(last_scraped[1], '%Y-%m-%d %H:%M:%S') > recent_scrape_cutoff:
-        logger.info(f"Skipping recently scraped data for {suburb}, {property_type}, {category}, {bedrooms} bedrooms.")
+        logger.info(f"Skipping recently scraped data for {suburb}, {property_type}, {listing_type}, {bedrooms} bedrooms.")
         db_handler.close()
         return
 
@@ -114,7 +114,7 @@ def scrape_page(params):
         while retry_count < max_retries:
             try:
                 # Construct URL and load page
-                url = f"https://www.domain.com.au/{category}/{suburb}/{property_type}/{bedrooms}-bedroom{'s' if bedrooms > 1 else ''}/?ssubs=0&page={page_num}"
+                url = f"https://www.domain.com.au/{listing_type}/{suburb}/{property_type}/{bedrooms}-bedroom{'s' if bedrooms > 1 else ''}/?ssubs=0&page={page_num}"
                 logger.info(f"Scraping URL: {url}")
                 start_time = timeit.default_timer()
                 driver.get(url)
@@ -133,7 +133,7 @@ def scrape_page(params):
                     else:
                         status = SUCCESS_STATUS
                     logger.info(f"No listings found after timeout on page {page_num} for {bedrooms} bedrooms in {suburb}. Ending page scraping.")
-                    db_handler.update_progress(suburb, postcode, property_type, category, bedrooms, page_num, status, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                    db_handler.update_progress(suburb, postcode, property_type, listing_type, bedrooms, page_num, status, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     driver.quit()
                     db_handler.close()
                     return
@@ -147,7 +147,7 @@ def scrape_page(params):
                     else:
                         status = SUCCESS_STATUS
                     logger.info(f"No listings found on page {page_num} for {bedrooms} bedrooms in {suburb}. Ending page scraping.")
-                    db_handler.update_progress(suburb, postcode, property_type, category, bedrooms, page_num, status, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                    db_handler.update_progress(suburb, postcode, property_type, listing_type, bedrooms, page_num, status, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     driver.quit()
                     db_handler.close()
                     return
@@ -158,7 +158,7 @@ def scrape_page(params):
                 for listing in listings:
                     try:
                         data = extract_listing_data(listing)
-                        db_handler.update_listing(suburb, postcode, data['address'], property_type, data['price'], data['link'], data['listing_tag'], category, data['bathrooms'], data['parking_spaces'], data['square_metres'], scrape_time, bedrooms)
+                        db_handler.update_listing(suburb, postcode, data['address'], property_type, data['price'], data['link'], data['listing_tag'], listing_type, data['bathrooms'], data['parking_spaces'], data['square_metres'], scrape_time, bedrooms)
                     except StaleElementReferenceException as e:
                         logger.warning(f"StaleElementReferenceException while extracting data from listing: {e}")
                         continue  # Skip this listing
@@ -188,7 +188,7 @@ def scrape_page(params):
             if retry_count > max_retries:
                 logger.info(f"Failed to scrape page {page_num} for {bedrooms} bedrooms in {suburb}.")
                 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                db_handler.update_progress(suburb, postcode, property_type, category, bedrooms, page_num, FAILURE_STATUS, current_time)
+                db_handler.update_progress(suburb, postcode, property_type, listing_type, bedrooms, page_num, FAILURE_STATUS, current_time)
                 driver.quit()
                 db_handler.close()
                 return
